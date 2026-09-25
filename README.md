@@ -272,8 +272,8 @@ The deployed application allows users to access the prediction system through a 
 
 ### 🔗 Connect With Me
 
-* **LinkedIn:** [Your LinkedIn Profile](YOUR_LINKEDIN_PROFILE_URL)
-* **GitHub:** [Your GitHub Profile](YOUR_GITHUB_PROFILE_URL)
+* **LinkedIn:** 
+* **GitHub:** https://github.com/pragna-gujjula/Heart_disease_Prediction
 
 
 
@@ -285,11 +285,11 @@ The deployed application allows users to access the prediction system through a 
 
 ### 💻 GitHub Repository
 
-[View Source Code on GitHub](YOUR_GITHUB_REPOSITORY_URL)
+https://github.com/pragna-gujjula/Heart_disease_Prediction
 
 ### 🌐 Live Deployment
 
-[Click Here to Use the Heart Disease Prediction App](YOUR_RENDER_DEPLOYMENT_URL)
+https://heart-disease-prediction-5-hxbm.onrender.com
 
 ### 🔗 LinkedIn
 
