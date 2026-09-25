@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Heart Disease Prediction</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+
+        :root {
+            --primary: #6c63ff;
+            --primary-dark: #564fd8;
+            --accent: #ff5c8d;
+            --danger-bg: #fdecea;
+            --danger-text: #c0392b;
+            --danger-border: #f5b7b1;
+            --safe-bg: #e8f8f0;
+            --safe-text: #1e8e5a;
+            --safe-border: #a7e3c5;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at 20% 20%, #7f7fd5, transparent 60%),
+                        radial-gradient(circle at 80% 0%, #ff9a9e, transparent 55%),
+                        linear-gradient(135deg, #667eea, #764ba2 55%, #6c63ff);
+            padding: 30px 15px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px);
+            background-size: 26px 26px;
+            pointer-events: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 720px;
+            background: rgba(255, 255, 255, 0.97);
+            padding: 40px;
+            border-radius: 22px;
+            box-shadow: 0 25px 60px rgba(45, 30, 90, 0.35);
+            position: relative;
+            z-index: 1;
+            animation: floatIn 0.6s ease-out;
+        }
+
+        @keyframes floatIn {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .heart-icon {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 6px;
+        }
+
+        .heart-icon svg {
+            width: 46px;
+            height: 46px;
+            fill: var(--accent);
+            filter: drop-shadow(0 4px 10px rgba(255, 92, 141, 0.4));
+            animation: pulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+        }
+
+        h1 {
+            text-align: center;
+            color: #2b2540;
+            margin-bottom: 6px;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8a84a0;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .section-label {
+            grid-column: 1 / -1;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary);
+            margin: 6px 0 2px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #ece9fb;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 7px;
+            color: #3d3757;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #e1def0;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            background: #faf9ff;
+            color: #2b2540;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            appearance: none;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236c63ff' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+        input:hover,
+        select:hover {
+            border-color: #c9c3ec;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--primary);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.15);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            box-shadow: 0 12px 25px rgba(108, 99, 255, 0.35);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 30px rgba(108, 99, 255, 0.45);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            margin-top: 26px;
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: floatIn 0.4s ease-out;
+        }
+
+        .result.positive {
+            background: var(--danger-bg);
+            color: var(--danger-text);
+            border: 1.5px solid var(--danger-border);
+        }
+
+        .result.negative {
+            background: var(--safe-bg);
+            color: var(--safe-text);
+            border: 1.5px solid var(--safe-border);
+        }
+
+        .result svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .info {
+            margin-top: 22px;
+            text-align: center;
+            color: #a29cb8;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 26px 22px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="heart-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 21s-6.7-4.35-9.3-8.1C.6 9.9 1.4 6.3 4.4 4.9c2.2-1 4.6-.3 6 1.5.6.8.9 1.2 1.6 1.2.7 0 1-.4 1.6-1.2 1.4-1.8 3.8-2.5 6-1.5 3 1.4 3.8 5 1.7 8-2.6 3.75-9.3 8.1-9.3 8.1z"/></svg>
+        </div>
+
+        <h1>Heart Disease Prediction</h1>
+
+        <p class="subtitle">
+            Machine Learning Classification Model
+        </p>
+
+        <form action="/predict" method="POST">
+
+            <div class="form-grid">
+
+                <div class="section-label">Patient Info</div>
+
+                <div class="form-group">
+                    <label for="age">Age</label>
+
+                    <input
+                        type="number"
+                        id="age"
+                        name="age"
+                        placeholder="Enter age"
+                        min="1"
+                        max="120"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="sex">Sex</label>
+
+                    <select id="sex" name="sex" required>
+
+                        <option value="" disabled selected>
+                            Select sex
+                        </option>
+
+                        <option value="1">
+                            Male (1)
+                        </option>
+
+                        <option value="0">
+                            Female (0)
+                        </option>
+
+                    </select>
+                </div>
+
+                <div class="section-label">Clinical Measurements</div>
+
+                <div class="form-group">
+                    <label for="cp">Chest Pain Type (CP)</label>
+
+                    <select id="cp" name="cp" required>
+
+                        <option value="" disabled selected>
+                            Select CP
+                        </option>
+
+                        <option value="0">
+                            0 - Typical angina
+                        </option>
+
+                        <option value="1">
+                            1 - Atypical angina
+                        </option>
+
+                        <option value="2">
+                            2 - Non-anginal pain
+                        </option>
+
+                        <option value="3">
+                            3 - Asymptomatic
+                        </option>
+
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="trestbps">
+                        Resting Blood Pressure
+                    </label>
+
+                    <input
+                        type="number"
+                        id="trestbps"
+                        name="trestbps"
+                        placeholder="Example: 120"
+                        min="0"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="chol">
+                        Cholesterol
+                    </label>
+
+                    <input
+                        type="number"
+                        id="chol"
+                        name="chol"
+                        placeholder="Example: 200"
+                        min="0"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="fbs">
+                        Fasting Blood Sugar
+                    </label>
+
+                    <select id="fbs" name="fbs" required>
+
+                        <option value="" disabled selected>
+                            Select FBS
+                        </option>
+
+                        <option value="1">
+                            1 - Greater than 120
+                        </option>
+
+                        <option value="0">
+                            0 - Less than or equal to 120
+                        </option>
+
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="restecg">
+                        Resting ECG
+                    </label>
+
+                    <select id="restecg" name="restecg" required>
+
+                        <option value="" disabled selected>
+                            Select ECG
+                        </option>
+
+                        <option value="0">
+                            0 - Normal
+                        </option>
+
+                        <option value="1">
+                            1 - ST-T wave abnormality
+                        </option>
+
+                        <option value="2">
+                            2 - Left ventricular hypertrophy
+                        </option>
+
+                    </select>
+                </div>
+
+                <div class="section-label">Exercise Test Results</div>
+
+                <div class="form-group">
+                    <label for="thalach">
+                        Maximum Heart Rate
+                    </label>
+
+                    <input
+                        type="number"
+                        id="thalach"
+                        name="thalach"
+                        placeholder="Example: 150"
+                        min="0"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="exang">
+                        Exercise-Induced Angina
+                    </label>
+
+                    <select id="exang" name="exang" required>
+
+                        <option value="" disabled selected>
+                            Select option
+                        </option>
+
+                        <option value="1">
+                            Yes (1)
+                        </option>
+
+                        <option value="0">
+                            No (0)
+                        </option>
+
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="oldpeak">
+                        ST Depression (Oldpeak)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="oldpeak"
+                        name="oldpeak"
+                        placeholder="Example: 1.5"
+                        step="any"
+                        min="0"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="slope">
+                        Slope
+                    </label>
+
+                    <select id="slope" name="slope" required>
+
+                        <option value="" disabled selected>
+                            Select slope
+                        </option>
+
+                        <option value="0">
+                            0
+                        </option>
+
+                        <option value="1">
+                            1
+                        </option>
+
+                        <option value="2">
+                            2
+                        </option>
+
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="ca">
+                        Number of Major Vessels (CA)
+                    </label>
+
+                    <select id="ca" name="ca" required>
+
+                        <option value="" disabled selected>
+                            Select CA
+                        </option>
+
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="thal">
+                        Thalassemia (Thal)
+                    </label>
+
+                    <select id="thal" name="thal" required>
+
+                        <option value="" disabled selected>
+                            Select Thal
+                        </option>
+
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+
+                    </select>
+                </div>
+
+            </div>
+
+
+            <button type="submit">
+                Predict Heart Disease
+            </button>
+
+        </form>
+
+
+        {% if prediction_text is defined %}
+
+        {% if "not detected" in prediction_text %}
+        <div class="result negative">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+            {{ prediction_text }}
+        </div>
+        {% else %}
+        <div class="result positive">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a1.5 1.5 0 001.3 2.2h17.8a1.5 1.5 0 001.3-2.2L13.7 3.9a1.5 1.5 0 00-2.6 0z"/></svg>
+            {{ prediction_text }}
+        </div>
+        {% endif %}
+
+        {% endif %}
+
+
+        <p class="info">
+            Educational machine learning project only.
+            This prediction is not a medical diagnosis.
+        </p>
+
+    </div>
+
+</body>
+
+</html>
